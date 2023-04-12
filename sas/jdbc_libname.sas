@@ -1,18 +1,28 @@
-/* This script runs off sql warehouse */
+/* This script runs off sql warehouse or interactive cluster depending on HTTP_PATH*/
 
-libname x clear;
+* HTTP_PATH=WAREHOUSE_PATH;
+%let HTTP_PATH=&CLUSTER_PATH;
 
-libname x JDBC driverclass="com.databricks.client.jdbc.Driver"
-   URL="jdbc:databricks://&DBR_HOST:443/default;transportMode=http;ssl=1;AuthMech=3;httpPath=/sql/1.0/warehouses/60da312dbfd48551;" user="token" 
-   password="dapi059bbc61352dd35f41cb44225670688a-2" classpath="/export/sas-viya/data/drivers/";
+libname jdbc clear;
 
-
-/*
-data x.cars;
-set sashelp.cars(obs=5);
-run; */
+libname jdbc JDBC 
+   driverclass="com.databricks.client.jdbc.Driver"
+   classpath="/export/sas-viya/data/drivers/"
+   URL="jdbc:databricks://&DBR_HOST:443/default;transportMode=http;
+        ssl=1;AuthMech=3;httpPath=&HTTP_PATH;
+        ConnCatalog=sas_interop;
+        ConnSchema=demo;"
+   user="token" 
+   password=&DBR_TOKEN;
 
 proc sql;
-select * from x.cars;
+DROP TABLE jdbc.jdbc_cars;
 quit;
 
+data jdbc.jdbc_cars;
+set sashelp.cars(obs=5);
+run;
+
+proc sql;
+select * from jdbc.jdbc_cars;
+quit;
