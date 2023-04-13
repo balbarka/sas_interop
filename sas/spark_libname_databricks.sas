@@ -1,3 +1,4 @@
+/* Not Working */
 /* Tests LIBNAME Statement for Spark */
 /* https://go.documentation.sas.com/doc/en/pgmsascdc/v_037/acreldb/n1udyznblny75qn1x7ng2y4wahxf.htm */
 
@@ -29,34 +30,6 @@ libname cdata_bl spark
        Database=default;
        QueryPassthrough=true;DefaultColumnSize=255;
        Token=&DBR_TOKEN;';
-
-libname dbx clear;
-libname dbx spark
-  classpath="/export/sas-viya/data/drivers/"
-  driverClass="com.databricks.client.jdbc.Driver"
-  bulkload=NO 
-  url='jdbc:spark://&DBR_HOST:443;
-       HTTPPath=&CLUSTER_PATH;
-       Database=default;
-       QueryPassthrough=true;'
-  user=token
-  password=&DBR_TOKEN; 
-
-libname dbx_bl clear;
-libname dbx_bl spark
-  classpath="/export/sas-viya/data/drivers/"
-  driverClass="com.databricks.client.jdbc.Driver"
-  bulkload=yes
-  bl_applicationid='&ADLS_APPLICATION_ID'
-  bl_accountname='&ADLS_ACCOUNT_NAME'
-  bl_filesystem='&ADLS_FILESYSTEM'
-  url='jdbc:spark://&DBR_HOST:443/default;
-       transportMode=http;ssl=1;
-       HTTPPath=&CLUSTER_PATH;
-       AuthMech=3;defaultStringColumnLength=255;
-       useNativeQuery=1;'
-  user=token
-  password=&DBR_TOKEN; 
 
 
 proc sql;
