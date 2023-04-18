@@ -7,8 +7,8 @@
             HTTPPath=&CLUSTER_PATH;Database=demo;Catalog=sas_interop;
             QueryPassthrough=true;Token=&DBR_TOKEN" ;
 
-libname CdtSpark clear;
-libname CdtSpark spark
+libname spark clear;
+libname spark spark
     driverClass=&MYDRIVERCLASS
     bulkload=NO
     url="jdbc:databricks:Server=&DBR_HOST;
@@ -32,6 +32,6 @@ libname CdtSpark spark
          QueryPassthrough=true;Token=&DBR_TOKEN" ;
 
 proc sql;
-select * from CdtSpark.cars;
+select * from spark.spark_cars;
 quit;
 

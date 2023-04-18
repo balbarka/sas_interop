@@ -31,6 +31,10 @@ libname CdtSpark spark
          HTTPPath=&CLUSTER_PATH;Database=default;
          QueryPassthrough=true;Token=&DBR_TOKEN" ;
 
+data CdtSpark.spark_cars2;
+set sashelp.cars(obs=5);
+run;
+
 proc sql;
 select * from CdtSpark.cars;
 quit;
