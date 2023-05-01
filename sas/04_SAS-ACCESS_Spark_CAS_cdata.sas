@@ -20,6 +20,8 @@ proc sql;
 select * from CdtSpark.cars;
 quit;
 
+options azuretenantid="&AZ_TENANT_ID";
+
 libname CdtSpark clear;
 libname CdtSpark spark
     driverClass=&MYDRIVERCLASS
@@ -32,6 +34,13 @@ libname CdtSpark spark
          QueryPassthrough=true;Token=&DBR_TOKEN" ;
 
 proc sql;
-select * from spark.spark_cars;
+select * from CdtSpark.cars;
 quit;
 
+data CdtSpark.bl_cars;
+set sashelp.cars(obs=5);
+run;
+
+data CdtSpark.bl_cars;
+set sashelp.cars(obs=5);
+run;
