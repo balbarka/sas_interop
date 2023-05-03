@@ -1,28 +1,22 @@
+# Databricks JDBC Driver Configuration
 
+We must complete the following configuration before being able to use the [Databricks JDBC Driver](https://www.databricks.com/spark/jdbc-drivers-download).
 
+ 1) Goto the [Databricks JDBC Driver Download](https://www.databricks.com/spark/jdbc-drivers-download) page and get a copy of the drive. Unzip.
+ 2) scp the driver to the jump server, then scp the driver to the nfs server.
+ 3) Move to final path in nfs server, `/export/access-clients/jdbc`
 
-There is an issue with the documentation that we are not able to get to the default path within SAS Studio. Looks like there is another step necessary to add this folder to path in k8s. Until able to figure out, we will be using the SAS Studio Path /export/sas-viya/data/drivers - which is not consistant with SAS Documentation.
-
-We are going to save our databricks jdbc driver in:
-
-/data-drivers/jdbc this is the recommended location based upon [Shared File System Recommended Directory Structure](https://go.documentation.sas.com/doc/en/itopscdc/v_036/itopssr/n0ampbltwqgkjkn1j3qogztsbbu0.htm#p0u8ihdebannnxn1oe7fh89kavwj)
-
-From within the jump server:
-
-````
-mkdir -p /viya-share/sas-viya/data-drivers/jdbc
-cd /viya-share/sas-viya/data-drivers/jdbc
-
+Alternately, in nfs server as root:
+``` bash
+cd /export/access-clients/jdbc
 
 wget https://databricks-bi-artifacts.s3.us-east-2.amazonaws.com/simbaspark-drivers/jdbc/2.6.32/DatabricksJDBC42-2.6.32.1054.zip
 
-# sudo apt-get install unzip
-
-
 unzip DatabricksJDBC42-2.6.32.1054.zip
-
 ```
 
+**NOTE**: Although you save to the path, `/export/access-clients/jdbc` on the nfs server, this is actually mounted to `/access-clients/jdbc` in SAS Studio. Thus, your **classpath** to use this jar will be `classpath=/access-clients/jdbc`.
 
+**NOTE**: Provided with SAS Viya is the [CData Databricks driver](https://cdn.cdata.com/help/LKH/jdbc/). It is located in the default SAS Studio classpath, `/opt/sas/viya/home/lib64/accessclients/jdbc` and therefore you do not need to provide the classpath when working with the CData Databricsk Driver.
 
-access-clients
+**NOTE**: `/export/access-clients/jdbc` is the most logical location when you look at the mounted fs. However, the documented location, `data-drivers/jdbc`, in [LIBNAME Statement for JDBC](https://go.documentation.sas.com/doc/en/pgmsascdc/v_035/acreldb/n0zm6fjwtgsnrzn1fegvyhl3yrwd.htm) doesn't exist.
