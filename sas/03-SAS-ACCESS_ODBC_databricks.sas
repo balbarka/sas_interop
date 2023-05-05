@@ -1,43 +1,32 @@
-/* TODO */
-
-libname dbx_odbc clear;
-
-libname dbx_odbc odbc
-    datasrc=Databricks
-    user=token
-    password=&DBR_TOKEN;
-
-libname dbx_odbc odbc datasrc=Databricks_Cluster;
+/* ODBC LIBNAME with Databricks Driver */
 
 
+libname odbc_dbr clear;
+libname odbc_dbr odbc
+   NOPROMPT="dsn=Databricks_Cluster;
+             Driver=/access-clients/odbc/simba/spark/lib/64/libsparkodbc_sb64.so;
+             HOST=adb-8590162618558854.14.azuredatabricks.net;
+             PORT=443;
+             Schema=demo;
+             Catalog=sas_interop;
+             SparkServerType=3;
+             AuthMech=3;
+             ThriftTransport=2;
+             SSL=1;
+             UseNativeQuery=1;"
+   AUTOCOMMIT=yes;
 
-
-proc sql;
-select * from dbx_odbc.jdbc_cars;
-quit;
-
-export DFESP_HOME=xxx;
-
-
-x "setenv STATUS 'running dstep doit'";
-  data getenv;
-  homedir=sysget('HOME');
-  put homedir=;
-  run;
-
-x "setenv STATUS 'running dstep doit'";
-data doit;
+proc contents data=odbc_dbr._all_ out=tables;
 run;
 
-data getenv;
-homedir=sysget('HOME');
-put homedir=;
-  run;
+libname odbc_dbr clear;
+libname odbc_dbr odbc
+   datasrc=Databricks_Cluster
+   UID="token" 
+   PWD=&DBR_TOKEN;
 
-
-x "export STATUS='TESTING'";
-
-data getstat;
-stat=sysget('LD_LIBRARY_PATH');
-put stat=;
+proc contents data=odbc_dbr._all_ out=tables;
 run;
+
+
+
