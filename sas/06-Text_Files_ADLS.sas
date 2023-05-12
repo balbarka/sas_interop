@@ -38,7 +38,6 @@ filename cars_txt adls
    accountname="&ADLS_ACCOUNT_NAME"
    filesystem="&ADLS_FILESYSTEM";
 
-filename cars_gz ZIP cars_txt GZIP;
 
 proc export data=cars
    outfile=cars_txt
