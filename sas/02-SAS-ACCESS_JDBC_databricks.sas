@@ -8,7 +8,8 @@ libname jdbc_dbr JDBC
    URL="jdbc:databricks://&DBR_HOST:443/default;transportMode=http;
         ssl=1;AuthMech=3;httpPath=&CLUSTER_PATH;
         ConnCatalog=sas_interop;
-        ConnSchema=demo;"
+        ConnSchema=demo;EnableArrow=1;
+        UseNativeQuery=1"
    user="token" 
    password=&DBR_TOKEN;
 
