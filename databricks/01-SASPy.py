@@ -127,7 +127,7 @@ sas.submitLST('data a;x=1;run; proc print data=a;run;', method='logandlist')
 # COMMAND ----------
 
 # MAGIC %md
-# MAGIC There are also methos to be able to read CSV directly from the SAS OS file system:
+# MAGIC There are also methods to be able to read CSV directly from the SAS OS file system:
 
 # COMMAND ----------
 

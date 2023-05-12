@@ -1,14 +1,42 @@
 # Databricks notebook source
 # MAGIC %md
 # MAGIC
-# MAGIC # Export to ADLS
+# MAGIC # Export Text Files to ADLS
 # MAGIC
-# MAGIC In this pattern we will look at how to write text files so that they can be immediately read by 
+# MAGIC You are able to use [PROC EXPORT](https://documentation.sas.com/doc/en/pgmsascdc/v_035/proc/n0ku4pxzx3d2len10ozjgyjbrpl9.htm) to SAS data sets to ADLS filenames. The source of the SAS data set can be from any libref. In this case we are able to reuse the same FILENAME statement from <a href="$./05-External_Location_ADLS" target="_blank">05-External_Location_ADLS</a>. 
 # MAGIC
+# MAGIC An example SAS file for this code can also be found in <a href="$../sas/06-Text_Files_ADLS.sas" target="_blank">06-Text_Files_ADLS.sas</a>.
 # MAGIC
-# MAGIC # CSV FILE TABLE
+# MAGIC Our first example will be reading a csv version of the **cars** data set. In this case, we will could read the text file directly, but we will instead write a schema on it since we have access to the source data schema:
+
+# COMMAND ----------
+
+path = 'abfss://sas-interop@hlsfieldexternal.dfs.core.windows.net/external/demo/export_cars_csv/export_cars.csv'
+dbutils.fs.rm(path)
+
+# COMMAND ----------
+
+# MAGIC %%SAS
 # MAGIC
-# MAGIC This process uses [FILENAME adls](https://documentation.sas.com/doc/en/pgmsascdc/v_035/lestmtsglobal/n0yc4ac0hf1yefn1r504kw2uesiw.htm) and [PROC EXPORT](https://documentation.sas.com/doc/en/pgmsascdc/v_035/proc/n0ku4pxzx3d2len10ozjgyjbrpl9.htm) to write text files that can be immediately read in Databricks.
+# MAGIC options azuretenantid = "&AZ_TENANT_ID";
+# MAGIC
+# MAGIC data cars;
+# MAGIC set sashelp.cars;
+# MAGIC format MSRP Invoice _NUMERIC_;
+# MAGIC run;
+# MAGIC
+# MAGIC filename cars_csv adls
+# MAGIC    "external/demo/export_cars_csv/export_cars.csv"
+# MAGIC    applicationid="&ADLS_APPLICATION_ID"
+# MAGIC    accountname="&ADLS_ACCOUNT_NAME"
+# MAGIC    filesystem="&ADLS_FILESYSTEM"
+# MAGIC    encoding="utf-8";
+# MAGIC
+# MAGIC proc export data=cars
+# MAGIC    outfile=cars_csv
+# MAGIC    dbms=dlm replace;
+# MAGIC    delimiter=',';
+# MAGIC run;
 
 # COMMAND ----------
 
@@ -40,6 +68,29 @@
 # MAGIC %md
 # MAGIC
 # MAGIC # TXT FILE TABLE
+# MAGIC
+# MAGIC Not that all the options need to be explored, but file can also be written using different delimiter arguments and can also be compressed with GZIP:
+
+# COMMAND ----------
+
+path = 'abfss://sas-interop@hlsfieldexternal.dfs.core.windows.net/external/demo/export_cars_txt/export_cars.txt'
+dbutils.fs.rm(path)
+
+# COMMAND ----------
+
+# MAGIC %%SAS
+# MAGIC
+# MAGIC filename cars_txt adls
+# MAGIC    "external/demo/export_cars_txt/export_cars.txt"
+# MAGIC    applicationid="&ADLS_APPLICATION_ID"
+# MAGIC    accountname="&ADLS_ACCOUNT_NAME"
+# MAGIC    filesystem="&ADLS_FILESYSTEM";
+# MAGIC
+# MAGIC
+# MAGIC proc export data=cars
+# MAGIC    outfile=cars_txt
+# MAGIC    dbms=TAB replace;
+# MAGIC run;
 
 # COMMAND ----------
 
@@ -70,21 +121,3 @@
 
 # MAGIC %sql
 # MAGIC SELECT type, count(*) FROM sas_interop.demo.export_cars_txt GROUP BY 1;
-
-# COMMAND ----------
-
-# MAGIC %md
-# MAGIC
-# MAGIC # Working with JSON
-# MAGIC
-# MAGIC We really want to avoid this, we'll create an example time permitting. This should only be explored if the existing SAS application is already writing json or jsonl files.
-# MAGIC
-# MAGIC Technically this uses jsonl which is a good format for nested data:
-# MAGIC
-# MAGIC https://blogs.sas.com/content/sasdummy/2018/11/14/jsonl-with-proc-json/
-# MAGIC
-# MAGIC This is a bad idea, don't do it
-
-# COMMAND ----------
-
-

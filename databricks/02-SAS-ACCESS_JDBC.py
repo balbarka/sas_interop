@@ -157,7 +157,7 @@
 # MAGIC | Description | Diagram |
 # MAGIC | --- | --- |
 # MAGIC | **Access Data with a SAS/ACCESS Engine** </br></br> When you use LIBNAME locally, you are actually reading the data into the SAS Compute (locally), </br>but then you would have to move that into distributed form. This extra step can be costly for large </br> data sets.  | ![SAS JDBC DIagram](https://go.documentation.sas.com/api/docsets/casref/v_002/content/images/access.png?locale=en) | 
-# MAGIC | **Access Data with a Data Connector or Data Connect Accelerator** </br></br> This allows the data to be read directly into the distributed form (CAS). You can additionally </br> provide configurations that will allow for multiple connections and multiple concurrent reads. | ![SAS JDBC DIagram](https://go.documentation.sas.com/api/docsets/casref/v_002/content/images/dbms.png?locale=en) | 
+# MAGIC | **Access Data with a Data Connector or Data Connect Accelerator** </br></br> This allows the data to be read directly into the distributed form (CAS). You can additionally </br> provide configurations that will allow for read into CAS Controller. </br> **NOTE**: the dotted lines are for controllers that provide parallel read operations, but that </br> functionality does not support Databricks. So those dotted lines should be ignored. | ![SAS JDBC DIagram](https://go.documentation.sas.com/api/docsets/casref/v_002/content/images/dbms.png?locale=en) | 
 # MAGIC
 # MAGIC When creating a [JDBC CAS Connector](https://documentation.sas.com/doc/en/pgmsascdc/v_035/casref/n1ldk5vubre9oen10bdqoqkfc1y7.htm) for Databricks you will use the following pattern:
 # MAGIC ```SAS

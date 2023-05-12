@@ -36,6 +36,21 @@
 # COMMAND ----------
 
 # MAGIC %sql
+# MAGIC SHOW TABLES IN sas_interop_demo;
+
+# COMMAND ----------
+
+# MAGIC %sql
+# MAGIC SELECT * FROM hive_metastore.sas_interop_demo.spark_cars;
+
+# COMMAND ----------
+
+# MAGIC %sql
+# MAGIC DESCRIBE FORMATTED hive_metastore.sas_interop_demo.spark_cars;
+
+# COMMAND ----------
+
+# MAGIC %sql
 # MAGIC CREATE DATABASE IF NOT EXISTS hive_metastore.demo;
 # MAGIC DROP TABLE IF EXISTS hive_metastore.demo.spark_cars;
 
@@ -48,6 +63,20 @@
 # MAGIC     url="jdbc:databricks:Server=&DBR_HOST;
 # MAGIC      HTTPPath=&CLUSTER_PATH;Database=default;
 # MAGIC          QueryPassthrough=true;Token=&DBR_TOKEN" ;
+
+# COMMAND ----------
+
+# MAGIC %md
+# MAGIC
+# MAGIC When bulkloading to Azure Databricks, you must provide additinoal configurations [Azure Databricks Spark BULKLOADING](https://go.documentation.sas.com/doc/en/pgmsascdc/v_038/acreldb/n1udyznblny75qn1x7ng2y4wahxf.htm#n0wn1jzs1z6ekun17vwi342jxcgz)
+
+# COMMAND ----------
+
+# MAGIC %md
+# MAGIC
+# MAGIC ## Spark Data Connector
+# MAGIC
+# MAGIC Just like JDBC and ODBC, there is a Data Connector for spark that can be used to read data into CAS. However, when reading the [documentation](https://documentation.sas.com/doc/en/pgmsascdc/v_035/casref/p02gmw66o8gtonn1astbqdzbjgq6.htm) you will see that it: **Enables you to transfer data between CAS and Spark that exists on a file system.**. This is actually done by 
 
 # COMMAND ----------
 
