@@ -3,18 +3,16 @@
 # MAGIC
 # MAGIC # Parquet Table using ADLS `FILENAME <table> parquet`
 # MAGIC
-# MAGIC **NOTE**: ADLS is not yet supported in the Parquet plug-in. 
+# MAGIC **NOTE**: ADLS is not yet supported in the Parquet plug-in, see [documentation](https://documentation.sas.com/doc/en/pgmsascdc/v_035/enghdff/n1p9l5zmpodbmyn14omvxe4dt4wx.htm). 
 # MAGIC
 # MAGIC ```
 # MAGIC ERROR: Exception occurred while writing to Parquet table: ADLS is not currently supported in the Parquet plug-in..
 # MAGIC ERROR: Failed to open ADLS_PQ.cars_pq.
 # MAGIC ```
 # MAGIC
-# MAGIC **TODO**: Write demo that generates this exception.
-
-# COMMAND ----------
-
-
+# MAGIC **TODO**: Write demo that generates this exception from ADLS.
+# MAGIC
+# MAGIC **NOTE**: Confirmation from SAS that ADLS parquet is supported after 2023.01 in SAS Viya.
 
 # COMMAND ----------
 
@@ -28,4 +26,6 @@
 
 # COMMAND ----------
 
-
+# MAGIC %md
+# MAGIC
+# MAGIC ## TODO: create aws S3 bucket and write AWS S3 Parquet demo

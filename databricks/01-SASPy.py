@@ -19,6 +19,7 @@
 # MAGIC ## Confirm SAS Config is complete
 # MAGIC
 # MAGIC We'll list our SAS configs showing are are infact using a `sascfg_personal.py` file. Then we will instantiate a [SASsession](https://sassoftware.github.io/saspy/api.html#saspy.SASsession) which we will use to demonstrate the class features.
+# MAGIC
 
 # COMMAND ----------
 
@@ -166,6 +167,7 @@ cars.columnInfo()
 
 # MAGIC %md
 # MAGIC Pandas DataFrames [describe](https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.describe.html) method is similar to [Proc Means](https://go.documentation.sas.com/doc/en/pgmsascdc/v_035/proc/n0k7qr5c2ah3stn10g1lr5oytz57.htm). SASdata object has the [describe](https://sassoftware.github.io/saspy/api.html#saspy.sasdata.SASdata.describe) method (and means as an alias method).
+# MAGIC
 
 # COMMAND ----------
 
@@ -292,7 +294,7 @@ ets_results = ets.timeid(id='horsepower', data=cars)
 # COMMAND ----------
 
 #???
-stat_results = stat.reg(model='horsepower = Cylinders EngineSize', data=cars)
+# stat_results = stat.reg(model='horsepower = Cylinders EngineSize', data=cars)
 
 # COMMAND ----------
 
@@ -315,7 +317,3 @@ sas.teach_me_SAS(False)
 # COMMAND ----------
 
 sas._endsas()
-
-# COMMAND ----------
-
-

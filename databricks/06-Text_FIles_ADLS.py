@@ -3,11 +3,15 @@
 # MAGIC
 # MAGIC # Export Text Files to ADLS
 # MAGIC
-# MAGIC You are able to use [PROC EXPORT](https://documentation.sas.com/doc/en/pgmsascdc/v_035/proc/n0ku4pxzx3d2len10ozjgyjbrpl9.htm) to SAS data sets to ADLS filenames. The source of the SAS data set can be from any libref. In this case we are able to reuse the same FILENAME statement from <a href="$./05-External_Location_ADLS" target="_blank">05-External_Location_ADLS</a>. 
+# MAGIC We'll show two appraoched on how to write text files to ADLS:
+# MAGIC  * By line input to a text file using a [data step](https://go.documentation.sas.com/doc/en/pgmsascdc/v_035/lestmtsref/p1bp8z934fjg2pn1rjlh9vrqq0iv.htm#n00ebkyjnimfijn15wzyfhzmlsy8) step with [file](https://go.documentation.sas.com/doc/en/pgmsascdc/v_035/lestmtsref/n15o12lpyoe4gfn1y1vcp6xs6966.htm#n1pyebpstm8ukbn1o7wqwrp9n7k9) statement. 
+# MAGIC  * Use [PROC EXPORT](https://documentation.sas.com/doc/en/pgmsascdc/v_035/proc/n0ku4pxzx3d2len10ozjgyjbrpl9.htm) to write a dataset leveraging a DBMS=DLM. 
+# MAGIC  
+# MAGIC In both cases we are able to reuse the same FILENAME statement from <a href="$./05-External_Location_ADLS" target="_blank">05-External_Location_ADLS</a>. 
 # MAGIC
 # MAGIC An example SAS file for this code can also be found in <a href="$../sas/06-Text_Files_ADLS.sas" target="_blank">06-Text_Files_ADLS.sas</a>.
 # MAGIC
-# MAGIC Our first example will be reading a csv version of the **cars** data set. In this case, we will could read the text file directly, but we will instead write a schema on it since we have access to the source data schema:
+# MAGIC <img src="https://github.com/balbarka/sas_interop/raw/main/ref/img/external_location_export.png" alt="external_location_export" width="600px">
 
 # COMMAND ----------
 
@@ -120,4 +124,4 @@ dbutils.fs.rm(path)
 # COMMAND ----------
 
 # MAGIC %sql
-# MAGIC SELECT type, count(*) FROM sas_interop.demo.export_cars_txt GROUP BY 1;
+# MAGIC SELECT type, count(*) cnt FROM sas_interop.demo.export_cars_txt GROUP BY 1;

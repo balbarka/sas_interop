@@ -5,6 +5,8 @@
 # MAGIC
 # MAGIC When using [SAS/ACCESS Interface for Spark](https://go.documentation.sas.com/doc/en/pgmsascdc/v_035/acreldb/p1qzm30adels9wn1oze9mgyc5pwc.htm) you can create a **libname** that will allow both read and write interface with a Databricks runtime. 
 # MAGIC
+# MAGIC <img src="https://github.com/balbarka/sas_interop/raw/main/ref/img/spark_connection.png" alt="spark_connection" width="600px">
+# MAGIC
 # MAGIC
 # MAGIC There is an example, <a href="$../sas/jdbc_libname.sas" target="_blank">jdbc_libname.sas</a>, as a SAS Script. It uses SAS Variables in the following form:
 # MAGIC
@@ -32,6 +34,13 @@
 # MAGIC **NOTE**: Databricks provides a [JDBC Driver](https://www.databricks.com/spark/jdbc-drivers-download) available for download.
 # MAGIC
 # MAGIC **NOTE**: The cdat driver doesn't have a way to set catalog, therefore it is not possible to use this driver for unity catalog. You must instead use `hive_metastore`.
+# MAGIC
+# MAGIC
+# MAGIC ---
+# MAGIC
+# MAGIC ## Incomplete, demo from SAS for now
+# MAGIC
+# MAGIC TLDR - bulk load works as expected, writing text files to ADLS temp location before loading into Delta table.
 
 # COMMAND ----------
 
@@ -42,6 +51,7 @@
 
 # MAGIC %sql
 # MAGIC SELECT * FROM hive_metastore.sas_interop_demo.spark_cars;
+# MAGIC
 
 # COMMAND ----------
 
@@ -77,7 +87,3 @@
 # MAGIC ## Spark Data Connector
 # MAGIC
 # MAGIC Just like JDBC and ODBC, there is a Data Connector for spark that can be used to read data into CAS. However, when reading the [documentation](https://documentation.sas.com/doc/en/pgmsascdc/v_035/casref/p02gmw66o8gtonn1astbqdzbjgq6.htm) you will see that it: **Enables you to transfer data between CAS and Spark that exists on a file system.**. This is actually done by 
-
-# COMMAND ----------
-
-

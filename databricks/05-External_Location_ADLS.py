@@ -13,10 +13,14 @@
 # MAGIC
 # MAGIC | SAS STATEMENT | Description |
 # MAGIC | ------------- | ----------- |
-# MAGIC | [FILENAME](https://documentation.sas.com/doc/en/pgmsascdc/v_035/lestmtsglobal/n0yc4ac0hf1yefn1r504kw2uesiw.htm) | This will create a single reference to a file location that can be used to write directly to a file path in ADLS2. There is no libref created in this instance. </br> With this reference you can write by line input to a text file. </br> When used with [PROC EXPORT](https://documentation.sas.com/doc/en/pgmsascdc/v_035/proc/n0ku4pxzx3d2len10ozjgyjbrpl9.htm) this is a viable way to write a csv or comma delimited text files from a SAS data set. |
+# MAGIC | [FILENAME](https://documentation.sas.com/doc/en/pgmsascdc/v_035/lestmtsglobal/n0yc4ac0hf1yefn1r504kw2uesiw.htm) | This will create a single reference to a file location that can be used to write directly to a file path in ADLS2. There is no libref created in this instance. </br> With this reference you can write by line input to a text file using a [data step](https://go.documentation.sas.com/doc/en/pgmsascdc/v_035/lestmtsref/p1bp8z934fjg2pn1rjlh9vrqq0iv.htm#n00ebkyjnimfijn15wzyfhzmlsy8) step with [file](https://go.documentation.sas.com/doc/en/pgmsascdc/v_035/lestmtsref/n15o12lpyoe4gfn1y1vcp6xs6966.htm#n1pyebpstm8ukbn1o7wqwrp9n7k9) statement. </br> When used with [PROC EXPORT](https://documentation.sas.com/doc/en/pgmsascdc/v_035/proc/n0ku4pxzx3d2len10ozjgyjbrpl9.htm) this is a viable way to write a csv or comma delimited text files from a SAS data set. |
 # MAGIC | [LIBNAME </br> (ORC & Parquet)](https://documentation.sas.com/doc/en/pgmsascdc/v_035/enghdff/p1aq5w1grouaodn1pxwuvt9xy88z.htm) | To write serialized columner formats, you use [LIBNAME](https://documentation.sas.com/doc/en/pgmsascdc/v_035/enghdff/p1aq5w1grouaodn1pxwuvt9xy88z.htm), specify either an ORC or Parquet engine and specify ADLS storage parameters. In this case, </br> any file in the ADLS folder path specified will become a SAS dataset in the created *libref* consistant with the SAS terminology above. </br> However, you are additionally able to set a [`DIRECTORIES_AS_DATA`](https://documentation.sas.com/doc/en/pgmsascdc/v_035/enghdff/n0wvzanujcpw7wn150kdmmxcozpp.htm) argument which will create a SAS data set for every subfolder. While this setting </br> makes the *libref* inconsistant with the above SAS terminology, it is helpful when working with Hadoop and Databricks environments where the default </br> behavior is to name the table based upon the folder name, not individual file names. |
 # MAGIC
 # MAGIC The rest of this notebook will go through the initial configuration of ADLS and provide and write a free text example to confirm permissions.
+# MAGIC
+# MAGIC There are two SAS Community Entires that can be used for configurations:
+# MAGIC  * [](https://communities.sas.com/t5/SAS-Communities-Library/SAS-Viya-Azure-AD-Single-Sign-On-to-Other-Azure-Services/ta-p/831206)
+# MAGIC  * [SAS Viya 3.5 : CAS accessing Azure Data Lake files.](https://communities.sas.com/t5/SAS-Communities-Library/SAS-Viya-3-5-CAS-accessing-Azure-Data-Lake-files/ta-p/635147)
 
 # COMMAND ----------
 
@@ -38,6 +42,7 @@
 # MAGIC | `ADLS_APPLICATION_ID`  | Available from the Azure Registered Application page for your organization |
 # MAGIC | `ADLS_ACCOUNT_NAME`    | Azure Data Lake Storage account name |
 # MAGIC | `ADLS_FILESYSTEM`      | ADLS container file system name |
+# MAGIC
 
 # COMMAND ----------
 
@@ -66,6 +71,9 @@
 # MAGIC ---
 # MAGIC
 # MAGIC As example, we will write a CSV file by line to ADLS, then show we can read that file in Databricks.
+# MAGIC
+# MAGIC <img src="https://github.com/balbarka/sas_interop/raw/main/ref/img/external_location_data.png" alt="external_location_data" width="600px">
+# MAGIC
 
 # COMMAND ----------
 
@@ -100,7 +108,9 @@ display(ps.read_csv('abfss://sas-interop@hlsfieldexternal.dfs.core.windows.net/e
 
 # MAGIC %md
 # MAGIC
-# MAGIC TODO: Write out constraints on parallel reads / parallel writes.
+# MAGIC # COMMENT ON PARALLEL READ/WRITE to ADLS
+# MAGIC
+# MAGIC TODO: Write out constraints on parallel reads / parallel writes. Currently, there is no parallel read or write functionality for ORC or Parquet. However, there is documented use of it for NFS, but not clear if it extends to ADLS. This will have to be proven out, before presenting TEXT as a viable storage format when using CAS.
 # MAGIC
 # MAGIC ![Path Caslib Data Access](https://go.documentation.sas.com/api/docsets/casref/v_002/content/images/path.png?locale=en) </br>
 # MAGIC ![DNFS Caslib Data Access](https://go.documentation.sas.com/api/docsets/casref/v_002/content/images/dnfs.png?locale=en)
@@ -109,5 +119,5 @@ display(ps.read_csv('abfss://sas-interop@hlsfieldexternal.dfs.core.windows.net/e
 # MAGIC
 # MAGIC | Method | Advantages | Disadvantages |
 # MAGIC | ------ | ---------- | ------------- |
-# MAGIC | Assign a Path or DNFS caslib to access the directory. | * The server accesses the data and avoids delays that are added by transferring the data through additional clients. </br> * For a DNFS caslib, a distributed server can load the data in parallel from the directory. | * If you need to load a CSV file that is not rigidly structured, CAS has limited ability to process record-by-record differences. |
+# MAGIC | Assign a Path or DNFS caslib to access the directory. | * The server accesses the data and avoids delays that are added by transferring the data through additional clients. </br> * For a DNFS caslib, a distributed server can load the data **in parallel** from the directory. | * If you need to load a CSV file that is not rigidly structured, CAS has limited ability to process record-by-record differences. |
 # MAGIC | Assign a SAS libref to access the directory and then load from SAS to CAS. | \* To load a loosely structured CSV file, PROC IMPORT or a DATA step can perform sophisticated data type conversion and data manipulation. | * Unless data manipulation is required, SAS transfers the data serially to CAS and can be slow due to network transfer speeds |

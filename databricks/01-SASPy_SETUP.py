@@ -6,6 +6,8 @@
 # MAGIC ### Background:
 # MAGIC [SASPy](https://github.com/sassoftware/saspy) is maintainted by SAS and provides an connection class to interface with an existing SAS deployment. Results returned can be text, HTML5 (the common output form in SAS), as well as pandas Dataframes. This interface is most useful when the predominance of operation is done in a non-SAS environement and either data or processes critical to the workflow / discovery are in SAS. Thus, one would most likely use SASpy from an ipython session, jupyter, or in our case Databricks notebook.
 # MAGIC
+# MAGIC <img src="https://github.com/balbarka/sas_interop/raw/main/ref/img/saspy_connection.png" alt="saspy_connection" width="600px">
+# MAGIC
 # MAGIC ### Refrences:
 # MAGIC
 # MAGIC   * [SASPy Python Package Documentation](https://sassoftware.github.io/saspy/)
@@ -65,6 +67,7 @@ print(f'List of SASPy configs found: \n{saspy.list_configs()}')
 # MAGIC Since we do not want to expose our credentials in this setup, we will be leveraging Databricks [secret management](https://learn.microsoft.com/en-us/azure/databricks/security/secrets/) to handle all our sensitive configuraitons. See bottom of notebook for detailed instructions.
 # MAGIC
 # MAGIC **NOTE**: Since the approach that we are using writes the connection configs into the cluster library install path, users will necessarily want to use a personal cluster for this configuration. If not, there will be collisions on users writing configuration files as well as configurations will be accessible to all users which introduces a security issues.
+# MAGIC
 
 # COMMAND ----------
 
@@ -149,7 +152,39 @@ def SAS(line, cell):
 
 # COMMAND ----------
 
-# MAGIC %%SAS lst log
+# MAGIC %%SAS
+# MAGIC
+# MAGIC
+
+# COMMAND ----------
+
+import saspy
+
+# COMMAND ----------
+
+sql = "SELECT * FROM SASHELP.CARS"
+sas.submit(f'PROC SQL; CREATE TABLE work.qry_temp_dataset AS ({sql});')
+xxx = sas.sasdata('temp_dataset', libref='WORK', results='Pandas').to_df()
+display(xxx)
+
+# COMMAND ----------
+
+cmd = """PROC SQL;
+  CREATE TABLE work.qry_temp_dataset AS
+  (SELECT * from SASHELP.CARS);
+QUIT;"""
+
+sas.submit(cmd)
+xxx = sas.sasdata('temp_dataset', libref='WORK', results='Pandas')
+display(xxx.to_df())
+
+# COMMAND ----------
+
+sas.datasets('WORK')
+
+# COMMAND ----------
+
+# MAGIC %%SAS lst
 # MAGIC proc print data=SASHELP.CARS (obs=10);
 # MAGIC run;
 

@@ -1,12 +1,15 @@
 # Databricks notebook source
 # MAGIC %md
 # MAGIC
-# MAGIC # SAS Access JDBC
+# MAGIC # SAS/Access JDBC
 # MAGIC
 # MAGIC SAS Access for JDBC is the most straight forward interoperability approach for SAS users accustom to working with traditional RBDMS systems. 
 # MAGIC
-# MAGIC Within SAS Viya, you are able to use [SAS/ACCESS](https://support.sas.com/en/software/sas-access.html) which is component software within SAS specific to connecting to data sources. Each of the supported datasource have one or more a SAS/Access engines. These engines are a component of SAS software that when configured and instantiated enable SAS to access and manipulate data sources (both external databases or file systems). When using [SAS/ACCESS Interface to JDBC](https://go.documentation.sas.com/doc/en/pgmsascdc/v_035/acreldb/n1usgr00wc9cvln1gnyp1807qu17.htm), we must also provide a JDBC driver (in our case, the [Databricks JDBC Driver](https://www.databricks.com/spark/jdbc-drivers-download)). The SAS JDBC Engine ensures that is SAS commands properly call the JDBC driver using the JDBC API to run valid Databricks API commands. The effect is that SAS can now connect to Databricks same as any other Data source which simplifies code complexity and improves user expereience. Here is the general JDBC connection diagram from [SAS Documentation](https://documentation.sas.com/doc/en/pgmsascdc/v_035/acreldb/p12qtje0ckagd5n1eyudktfp4n5m.htm): </br>
+# MAGIC Within SAS Viya, you are able to use [SAS/ACCESS](https://support.sas.com/en/software/sas-access.html) which is component software within SAS specific to connecting to data sources. Each of the supported datasource have one or more a SAS/Access engines. These engines are a component of SAS software that when configured and instantiated enable SAS to access and manipulate data sources (both external databases or file systems). When using [SAS/ACCESS Interface to JDBC](https://go.documentation.sas.com/doc/en/pgmsascdc/v_035/acreldb/n1usgr00wc9cvln1gnyp1807qu17.htm), we must also provide a JDBC driver (in our case, the [Databricks JDBC Driver](https://www.databricks.com/spark/jdbc-drivers-download)). The SAS JDBC Engine ensures that is SAS commands properly call the JDBC driver using the JDBC API to run valid Databricks API commands. The effect is that SAS can now connect to Databricks same as any other Data source which simplifies code complexity and improves user expereience. Here is the general JDBC connection diagram from [SAS Documentation](https://documentation.sas.com/doc/en/pgmsascdc/v_035/acreldb/p12qtje0ckagd5n1eyudktfp4n5m.htm) and how the connection works specific to Databricks: </br>
 # MAGIC ![SAS JDBC DIagram](https://go.documentation.sas.com/api/docsets/acreldb/v_003/content/images/jdbcupdated.png?locale=en)
+# MAGIC <img src="https://github.com/balbarka/sas_interop/raw/main/ref/img/jdbc_connection.png" alt="jdbc_connection" width="500px">
+# MAGIC
+# MAGIC
 # MAGIC
 # MAGIC In our case, JDBC Driver and Data Source is specific to Databricks. The Databricks Source can actually be in one of two instance types;
 # MAGIC  * [Databricks Cluster](https://learn.microsoft.com/en-us/azure/databricks/clusters/) - for the demo, we will use a Databricks Cluster.
@@ -47,6 +50,10 @@
 # MAGIC **NOTE**: There is a SAS provided Databricks JDBC Driver by [CData](https://cdn.cdata.com/help/LKH/jdbc/). While it has the convenience of being included in SAS Viya already, it has a limitation that you are curently unable to set a default catalog which makes it slightly more cumbersome to use with unity catalog. It will not be reviewed in this notebook, but an example configuration is provided in <a href="$../sas/02-SAS-ACCESS_JDBC_cdata.sas" target="_blank">02-SAS-ACCESS_JDBC_cdata.sas</a>.
 # MAGIC
 # MAGIC **NOTE**: There is a pre-requisite task to load the JDBC driver into SAS. Those instructions can be found in <a href="$../ref/JDBC_config.md" target="_blank">JDBC_config.md</a>.
+
+# COMMAND ----------
+
+sas_magic._endsas() 
 
 # COMMAND ----------
 
@@ -123,7 +130,7 @@
 
 # COMMAND ----------
 
-# MAGIC %%SAS lst
+# MAGIC %%SAS lst log
 # MAGIC
 # MAGIC /* Run a PIVOT using proc tabulate */
 # MAGIC
@@ -254,6 +261,7 @@
 # MAGIC ## JDBC CAS Connector Table Save Exception
 # MAGIC
 # MAGIC When trying to save our table we run into a create table exception from Databricks JDBC/ODBC Server. This is due to invalid syntax being generated during the save process. While this is an unfortunate loss of functionality, we likely would not use this to save data anyways due to poor performance. You can run the code below to see the exception from SAS and you can inspect the invalida query submitted by going to [Compute](#setting/clusters) -> Cluster -> Spark UI -> JDBC/ODBC Server.
+# MAGIC
 
 # COMMAND ----------
 
