@@ -346,6 +346,271 @@ import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.linear_model import LinearRegression
 from sklearn.preprocessing import PolynomialFeatures
+from scipy.stats import probplot
+from matplotlib.pyplot import figure
+
+figure(figsize=(16, 16), dpi=80)
+
+# Set a random seed for reproducibility (optional)
+np.random.seed(42)
+
+# Generate 100 random x values between 0 and 10
+x = np.random.rand(100) * 10 - 5
+
+# Generate corresponding y values with some noise
+y = 4 * x**3 - x**2 + 5 * x + np.random.normal(0, 30, 100)
+
+# Reshape the x array to a column vector (required for scikit-learn)
+x = x.reshape(-1, 1)
+
+# Create polynomial features up to degree 3
+poly = PolynomialFeatures(degree=3)
+x_poly = poly.fit_transform(x)
+
+# Train a polynomial regression model
+model = LinearRegression()
+model.fit(x_poly, y)
+
+# Predict y values using the trained model
+y_pred = model.predict(x_poly)
+
+# Create a scatter plot of the observed data points
+plt.subplot(2, 2, 1)
+plt.scatter(x, y, label='Observed Data', color='blue')
+
+# Sort x values for smoother curve plotting
+x_sorted = np.sort(x, axis=0)
+
+# Predict y values for the sorted x values
+x_sorted_poly = poly.transform(x_sorted)
+y_sorted_pred = model.predict(x_sorted_poly)
+
+# Plot the predicted curve through the data points
+plt.plot(x_sorted, y_sorted_pred, label='Polynomial Regression', color='red')
+
+plt.xlabel('x')
+plt.ylabel('y')
+plt.title('Polynomial Regression with scikit-learn')
+plt.legend()
+plt.grid(True)
+
+# Create a residual plot
+residuals = y - y_pred
+plt.subplot(2, 2, 2)
+plt.scatter(y_pred, residuals, label='Residuals', color='blue')
+plt.xlim([np.min(y_pred), np.max(y_pred)])
+plt.axhline(y=0, linestyle='--', color='gray')
+plt.xlabel('Predicted Values')
+plt.ylabel('Residuals')
+plt.title('Residual Plot')
+plt.grid(True)
+
+# Create a Cook's distance plot
+plt.subplot(2, 2, 3)
+influence = model.get_influence()
+(c, _) = influence.cooks_distance
+
+plt.stem(c, markerfmt=",")
+
+plt.xlabel('Observation Index')
+plt.ylabel("Cook's Distance")
+plt.title("Cook's Distance Plot")
+plt.grid(True)
+
+# Create a Q-Q plot of the residuals
+plt.subplot(2, 2, 4)
+probplot(residuals, plot=plt)
+
+plt.xlabel('Theoretical Quantiles')
+plt.ylabel('Sample Quantiles')
+plt.title('Q-Q Plot of Residuals')
+plt.grid(True)
+
+# Create a histogram of the residuals
+plt.figure(figsize=(16, 8))
+plt.hist(residuals, bins=20)
+
+plt.xlabel('Residuals')
+plt.ylabel('Frequency')
+plt.title('Histogram of Residuals')
+plt.grid(True)
+
+plt.show()
+
+# COMMAND ----------
+
+import numpy as np
+import matplotlib.pyplot as plt
+from sklearn.linear_model import LinearRegression
+from sklearn.preprocessing import PolynomialFeatures
+from scipy.stats import probplot
+from statsmodels.stats.outliers_influence import OLSInfluence
+from matplotlib.pyplot import figure
+
+figure(figsize=(16, 16), dpi=80)
+
+# Set a random seed for reproducibility (optional)
+np.random.seed(42)
+
+# Generate 100 random x values between 0 and 10
+x = np.random.rand(100) * 10 - 5
+
+# Generate corresponding y values with some noise
+y = 4 * x**3 - x**2 + 5 * x + np.random.normal(0, 30, 100)
+
+# Reshape the x array to a column vector (required for scikit-learn)
+x = x.reshape(-1, 1)
+
+# Create polynomial features up to degree 3
+poly = PolynomialFeatures(degree=3)
+x_poly = poly.fit_transform(x)
+
+# Train a polynomial regression model
+model = LinearRegression()
+model.fit(x_poly, y)
+
+# Predict y values using the trained model
+y_pred = model.predict(x_poly)
+
+# Create a scatter plot of the observed data points
+plt.subplot(2, 2, 1)
+plt.scatter(x, y, label='Observed Data', color='blue')
+
+# Sort x values for smoother curve plotting
+x_sorted = np.sort(x, axis=0)
+
+# Predict y values for the sorted x values
+x_sorted_poly = poly.transform(x_sorted)
+y_sorted_pred = model.predict(x_sorted_poly)
+
+# Plot the predicted curve through the data points
+plt.plot(x_sorted, y_sorted_pred, label='Polynomial Regression', color='red')
+
+plt.xlabel('x')
+plt.ylabel('y')
+plt.title('Polynomial Regression with scikit-learn')
+plt.legend()
+plt.grid(True)
+
+# Create a residual plot
+residuals = y - y_pred
+plt.subplot(2, 2, 2)
+plt.scatter(y_pred, residuals, label='Residuals', color='blue')
+plt.xlim([np.min(y_pred), np.max(y_pred)])
+plt.axhline(y=0, linestyle='--', color='gray')
+plt.xlabel('Predicted Values')
+plt.ylabel('Residuals')
+plt.title('Residual Plot')
+plt.grid(True)
+
+# Calculate Cook's distance
+influence = OLSInfluence(model)
+(c, _) = influence.cooks_distance
+
+# Create a Cook's distance plot
+plt.subplot(2, 2, 3)
+plt.stem(c, markerfmt=",")
+
+plt.xlabel('Observation Index')
+plt.ylabel("Cook's Distance")
+plt.title("Cook's Distance Plot")
+plt.grid(True)
+
+# Create a Q-Q plot of the residuals
+plt.subplot(2, 2, 4)
+probplot(residuals, plot=plt)
+
+plt.xlabel('Theoretical Quantiles')
+plt.ylabel('Sample Quantiles')
+plt.title('Q-Q Plot of Residuals')
+plt.grid(True)
+
+# Create a histogram of the residuals
+plt.figure(figsize=(16, 8))
+plt.hist(residuals, bins=20)
+
+plt.xlabel('Residuals')
+plt.ylabel('Frequency')
+plt.title('Histogram of Residuals')
+plt.grid(True)
+
+plt.show()
+
+# COMMAND ----------
+
+import numpy as np
+import matplotlib.pyplot as plt
+from sklearn.linear_model import LinearRegression
+from sklearn.preprocessing import PolynomialFeatures
+from matplotlib.pyplot import figure
+
+# Set the figure size to 16x8
+figure(figsize=(16, 8), dpi=80)
+
+# Set a random seed for reproducibility (optional)
+np.random.seed(42)
+
+# Generate 100 random x values between 0 and 10
+x = np.random.rand(100) * 10 - 5
+
+# Generate corresponding y values with some noise
+y = 4 * x**3 - x**2 + 5 * x + np.random.normal(0, 30, 100)
+
+# Reshape the x array to a column vector (required for scikit-learn)
+x = x.reshape(-1, 1)
+
+# Create polynomial features up to degree 3
+poly = PolynomialFeatures(degree=3)
+x_poly = poly.fit_transform(x)
+
+# Train a polynomial regression model
+model = LinearRegression()
+model.fit(x_poly, y)
+
+# Predict y values using the trained model
+y_pred = model.predict(x_poly)
+
+# Calculate residuals
+residuals = y - y_pred
+
+# Create a scatter plot of the observed data points
+plt.subplot(1, 2, 1)
+plt.scatter(x, y, label='Observed Data', color='blue')
+
+# Sort x values for smoother curve plotting
+x_sorted = np.sort(x, axis=0)
+
+# Predict y values for the sorted x values
+x_sorted_poly = poly.transform(x_sorted)
+y_sorted_pred = model.predict(x_sorted_poly)
+
+# Plot the predicted curve through the data points
+plt.plot(x_sorted, y_sorted_pred, label='Polynomial Regression', color='red')
+
+plt.xlabel('x')
+plt.ylabel('y')
+plt.title('Polynomial Regression with scikit-learn')
+plt.legend()
+plt.grid(True)
+
+# Create a residual plot
+plt.subplot(1, 2, 2)
+plt.scatter(y_pred, residuals, label='Residuals', color='blue')
+plt.axhline(y=0, linestyle='--', color='gray')
+plt.xlabel('Predicted Values')
+plt.ylabel('Residuals')
+plt.title('Residual Plot')
+plt.grid(True)
+
+# Show the plot with the new size
+plt.show()
+
+# COMMAND ----------
+
+import numpy as np
+import matplotlib.pyplot as plt
+from sklearn.linear_model import LinearRegression
+from sklearn.preprocessing import PolynomialFeatures
 from matplotlib.pyplot import figure
 
 figure(figsize=(16, 8), dpi=80)
@@ -393,3 +658,106 @@ plt.title('Polynomial Regression with scikit-learn')
 plt.legend()
 plt.grid(True)
 plt.show()
+
+# COMMAND ----------
+
+import numpy as np
+import matplotlib.pyplot as plt
+from sklearn.linear_model import LinearRegression
+from sklearn.preprocessing import PolynomialFeatures
+from scipy.stats import probplot
+from statsmodels.stats.outliers_influence import OLSInfluence
+from matplotlib.pyplot import figure
+
+figure(figsize=(16, 16), dpi=80)
+
+# Set a random seed for reproducibility (optional)
+np.random.seed(42)
+
+# Generate 100 random x values between 0 and 10
+x = np.random.rand(100) * 10 - 5
+
+# Generate corresponding y values with some noise
+y = 4 * x**3 - x**2 + 5 * x + np.random.normal(0, 30, 100)
+
+# Reshape the x array to a column vector (required for scikit-learn)
+x = x.reshape(-1, 1)
+
+# Create polynomial features up to degree 3
+poly = PolynomialFeatures(degree=3)
+x_poly = poly.fit_transform(x)
+
+# Train a polynomial regression model
+model = LinearRegression()
+model.fit(x_poly, y)
+
+# Predict y values using the trained model
+y_pred = model.predict(x_poly)
+
+# Create a scatter plot of the observed data points
+plt.subplot(2, 2, 1)
+plt.scatter(x, y, label='Observed Data', color='blue')
+
+# Sort x values for smoother curve plotting
+x_sorted = np.sort(x, axis=0)
+
+# Predict y values for the sorted x values
+x_sorted_poly = poly.transform(x_sorted)
+y_sorted_pred = model.predict(x_sorted_poly)
+
+# Plot the predicted curve through the data points
+plt.plot(x_sorted, y_sorted_pred, label='Polynomial Regression', color='red')
+
+plt.xlabel('x')
+plt.ylabel('y')
+plt.title('Polynomial Regression with scikit-learn')
+plt.legend()
+plt.grid(True)
+
+# Create a residual plot
+residuals = y - y_pred
+plt.subplot(2, 2, 2)
+plt.scatter(y_pred, residuals, label='Residuals', color='blue')
+plt.xlim([np.min(y_pred), np.max(y_pred)])
+plt.axhline(y=0, linestyle='--', color='gray')
+plt.xlabel('Predicted Values')
+plt.ylabel('Residuals')
+plt.title('Residual Plot')
+plt.grid(True)
+
+# Calculate Cook's distance
+influence = OLSInfluence(model)
+(c, _) = influence.cooks_distance
+
+# Create a Cook's distance plot
+plt.subplot(2, 2, 3)
+plt.stem(c, markerfmt=",")
+
+plt.xlabel('Observation Index')
+plt.ylabel("Cook's Distance")
+plt.title("Cook's Distance Plot")
+plt.grid(True)
+
+# Create a Q-Q plot of the residuals
+plt.subplot(2, 2, 4)
+probplot(residuals, plot=plt)
+
+plt.xlabel('Theoretical Quantiles')
+plt.ylabel('Sample Quantiles')
+plt.title('Q-Q Plot of Residuals')
+plt.grid(True)
+
+# Create a histogram of the residuals
+plt.figure(figsize=(16, 8))
+plt.hist(residuals, bins=20)
+
+plt.xlabel('Residuals')
+plt.ylabel('Frequency')
+plt.title('Histogram of Residuals')
+plt.grid(True)
+
+plt.show()
+
+# COMMAND ----------
+
+
