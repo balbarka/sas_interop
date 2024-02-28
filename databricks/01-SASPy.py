@@ -9,11 +9,8 @@
 # MAGIC
 # MAGIC This notebook is also expects to have automatic configuration of SAS environement done via statup scripts. See <a href="$./01-SASPy_SETUP" target="_blank">01-SASPy_SETUP</a> for configuration details.
 # MAGIC
-# MAGIC The configuration startup script provides three settings automatically:
-# MAGIC  - `saspy` library already imported with configurations for remote environement.
-# MAGIC  - `SAS` line and cell magic command to be able to call SAS directly in cell without using SAS syntax (without need for string escapes)
-# MAGIC  - `SAS_file` line magic command to be able to execute a local \*.sas file in a remote SAS environment 
-# MAGIC  
+# MAGIC The configuration startup script provides a `saspy` session automatically in `duct.SAS.session`.
+# MAGIC
 # MAGIC  ---
 # MAGIC  
 # MAGIC ## Confirm SAS Config is complete
@@ -23,9 +20,7 @@
 
 # COMMAND ----------
 
-print(saspy.list_configs())
-sas = saspy.SASsession(results='HTML')
-sas
+sas = duct.SAS.session
 
 # COMMAND ----------
 

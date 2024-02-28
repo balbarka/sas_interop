@@ -142,7 +142,7 @@ def SAS(line, cell):
     args = [a.lower() for a in line.split(' ')]
     show_LST = False if 'log' in args and 'lst' not in args else True
     show_LOG = True if 'log' in args else False
-    c = sas_magic.submit(cell)
+    c = sas.submit(cell)
     if show_LOG:
         print(c['LOG'])
     if show_LST:
@@ -152,39 +152,7 @@ def SAS(line, cell):
 
 # COMMAND ----------
 
-# MAGIC %%SAS
-# MAGIC
-# MAGIC
-
-# COMMAND ----------
-
-import saspy
-
-# COMMAND ----------
-
-sql = "SELECT * FROM SASHELP.CARS"
-sas.submit(f'PROC SQL; CREATE TABLE work.qry_temp_dataset AS ({sql});')
-xxx = sas.sasdata('temp_dataset', libref='WORK', results='Pandas').to_df()
-display(xxx)
-
-# COMMAND ----------
-
-cmd = """PROC SQL;
-  CREATE TABLE work.qry_temp_dataset AS
-  (SELECT * from SASHELP.CARS);
-QUIT;"""
-
-sas.submit(cmd)
-xxx = sas.sasdata('temp_dataset', libref='WORK', results='Pandas')
-display(xxx.to_df())
-
-# COMMAND ----------
-
-sas.datasets('WORK')
-
-# COMMAND ----------
-
-# MAGIC %%SAS lst
+# MAGIC %%SAS log lst
 # MAGIC proc print data=SASHELP.CARS (obs=10);
 # MAGIC run;
 
@@ -206,7 +174,7 @@ def SAS_file(line):
     show_LST = False if 'log' in args and 'lst' not in args else True
     show_LOG = True if 'log' in args else False
     with open(args[0],'r') as f:
-        c = sas_magic.submit(f.read())
+        c = sas.submit(f.read())
     if show_LOG:
         print(c['LOG'])
     if show_LST:
@@ -216,7 +184,7 @@ def SAS_file(line):
 
 # COMMAND ----------
 
-# MAGIC %SAS_file ../sas/cars_display.sas lst log
+# MAGIC %SAS_file ../sas/01-cars_display.sas lst log
 
 # COMMAND ----------
 
